@@ -10,6 +10,10 @@ import { generateEnemyArray, drawEnemy, updateEnemy } from './elements/enemy';
 
 export let gameSpeed = 1;
 
+let mainLoop: any;
+let isGameOver = false;
+let score = 0;
+
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
 const menu = document.querySelector<HTMLDivElement>('#menu')!;
@@ -25,14 +29,26 @@ const player1 = new Rectangle(40, 80, new Point(300, DIMENSIONS.CANVAS_HEIGHT - 
 
 function gameOver(){
   ctx.font = `72px Arial`;
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = 'red';  
   ctx.textAlign = 'center';
+  // ctx.textBaseline = 'middle';
 
   const gameOverText = 'Game Over';
+  const scoreText = `${score}`;
   const textX = canvas.width / 2;
-  const textY = canvas.height/ 2;
+  const textY = canvas.height / 2;
 
   ctx.fillText(gameOverText, textX, textY);
+  ctx.fillText(scoreText, textX, textY + 300);
+
+  cancelAnimationFrame(mainLoop);
+  isGameOver = true;
+}
+
+function drawScore(ctx: CanvasRenderingContext2D) {
+  ctx.font = "20px Arial"; // Set font size and family
+  ctx.fillStyle = "black"; // Set font color
+  ctx.fillText("Score: " + score, 60, 30); // Draw the score at position (10, 30)
 }
 
 function drawBackground(){
@@ -76,6 +92,8 @@ function detectCollision(firstObj:Rectangle, secondObj:Rectangle){
 }
 
 function draw() {
+  if (isGameOver) return;
+
   drawBackground();
 
   roadArray.forEach((road)=>{
@@ -93,19 +111,28 @@ function draw() {
   enemyArray.forEach(enemy => {
     if (detectCollision(enemy, player1)) {
         console.log(enemy,player1);
-        cancelAnimationFrame(mainLoop);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameOver();
     }
   });
 
-  const mainLoop = requestAnimationFrame(draw);
-  gameSpeed *= 1.0005
+  drawScore(ctx);
+
+  mainLoop = requestAnimationFrame(draw);
+  gameSpeed *= 1.0005;
+  score += 1;
 
 }
 
 //start game section
 function startGame(){
+  //reset to initial
+  isGameOver = false; 
+  score = 0; 
+  gameSpeed = 1;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   requestAnimationFrame(draw);
 }
 startButton.addEventListener('click', ()=>{
