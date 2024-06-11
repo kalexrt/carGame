@@ -23,7 +23,7 @@ ctx.beginPath();
     122,
     258,
     enemy.center.x - 20,
-    enemy.center.y,
+    enemy.center.y - 35,
     40,
     80
     );
