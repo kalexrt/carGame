@@ -6,6 +6,8 @@ import { gameSpeed } from "../main";
 import { ctx } from "../main";
 import { carImage } from "../constants";
 
+export let hasPassed:boolean;
+
 export function generateEnemyArray(): Rectangle[]{
     const enemy: Rectangle[] = [];
     for(let i:number=0; i<3;i++){
@@ -30,8 +32,10 @@ ctx.beginPath();
 }
 
 export function updateEnemy(enemy:Rectangle){
+    hasPassed = false;
     enemy.center.y += clamp(SPEED * gameSpeed, 0, 22);
     if (enemy.center.y > DIMENSIONS.CANVAS_HEIGHT) {
-      enemy.center.y = getRandomInt(-600, 0);
+        hasPassed = true;
+        enemy.center.y = getRandomInt(-600, 0);
     }
 }

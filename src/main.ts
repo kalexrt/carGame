@@ -1,18 +1,18 @@
 import './style.css';
-import { carImage } from './constants';
+
 import { DIMENSIONS } from './constants';
-
-import Point from './shapes/Point';
-import Rectangle from './shapes/Rectangle';
-
+import { drawBackground } from './elements/background';
+import { drawPlayer, player1 } from './elements/player';
 import { generateRoadArray, drawRoad, updateRoad } from './elements/road';
 import { generateEnemyArray, drawEnemy, updateEnemy } from './elements/enemy';
-
+import { drawScore } from './elements/score';
+import { detectCollision } from './utils/collision';
+import { hasPassed } from './elements/enemy';
 export let gameSpeed = 1;
+export let mainLoop: any;
+export let isGameOver = false;
+export let score = 0;
 
-let mainLoop: any;
-let isGameOver = false;
-let score = 0;
 
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
@@ -24,72 +24,25 @@ export const ctx = canvas.getContext('2d')!;
 canvas.width = DIMENSIONS.CANVAS_WIDTH;
 canvas.height = DIMENSIONS.CANVAS_HEIGHT;
 
-
-const player1 = new Rectangle(40, 80, new Point(300, DIMENSIONS.CANVAS_HEIGHT - 100));
-
 function gameOver(){
-  ctx.font = `72px Arial`;
+  ctx.font = `36px Arial`;
   ctx.fillStyle = 'red';  
   ctx.textAlign = 'center';
-  // ctx.textBaseline = 'middle';
 
   const gameOverText = 'Game Over';
   const scoreText = `${score}`;
+  const restartText = 'Press R to Restart';
   const textX = canvas.width / 2;
   const textY = canvas.height / 2;
 
-  ctx.fillText(gameOverText, textX, textY);
-  ctx.fillText(scoreText, textX, textY + 300);
+  ctx.fillText(gameOverText, textX, textY - 100);
+  ctx.fillText(scoreText, textX, textY + 100);
+  ctx.fillText(restartText, textX, textY + 200 )
 
   cancelAnimationFrame(mainLoop);
   isGameOver = true;
 }
 
-function drawScore(ctx: CanvasRenderingContext2D) {
-  ctx.font = "20px Arial"; // Set font size and family
-  ctx.fillStyle = "black"; // Set font color
-  ctx.fillText("Score: " + score, 60, 30); // Draw the score at position (10, 30)
-}
-
-function drawBackground(){
-  ctx.clearRect(0, 0, DIMENSIONS.CANVAS_WIDTH, DIMENSIONS.CANVAS_HEIGHT);
-  ctx.fillStyle = '#9c9c9c';
-  ctx.fillRect(0, 0, DIMENSIONS.CANVAS_WIDTH, DIMENSIONS.CANVAS_HEIGHT);
-
-}
-
-function drawPlayer(){
-  ctx.beginPath();
-  ctx.drawImage(
-    carImage,
-    215,
-    120,
-    122,
-    258,
-    player1.center.x - 20,
-    player1.center.y - 40,
-    40,
-    80
-  );
-}
-
-//collision
-function detectCollision(firstObj:Rectangle, secondObj:Rectangle){
-    let firstLeft = firstObj.center.x - firstObj.width / 2;
-    let firstRight = firstObj.center.x + firstObj.width / 2;
-    let firstTop = firstObj.center.y - (firstObj.height / 2);
-    let firstBottom = firstObj.center.y + (firstObj.height / 2);
-
-    let secondLeft = secondObj.center.x - secondObj.width / 2;
-    let secondRight = secondObj.center.x + secondObj.width / 2;
-    let secondTop = secondObj.center.y - (secondObj.height / 2);
-    let secondBottom = secondObj.center.y + (secondObj.height / 2);
-
-    return !(firstLeft > secondRight || 
-             firstRight < secondLeft || 
-             firstTop > secondBottom || 
-             firstBottom < secondTop);
-}
 
 function draw() {
   if (isGameOver) return;
@@ -104,13 +57,13 @@ function draw() {
   enemyArray.forEach((enemy) => {
     drawEnemy(enemy);
     updateEnemy(enemy);
+    if(hasPassed) score += 1;
   });
 
   drawPlayer();
 
   enemyArray.forEach(enemy => {
     if (detectCollision(enemy, player1)) {
-        console.log(enemy,player1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameOver();
     }
@@ -119,9 +72,7 @@ function draw() {
   drawScore(ctx);
 
   mainLoop = requestAnimationFrame(draw);
-  gameSpeed *= 1.0005;
-  score += 1;
-
+  gameSpeed *= 1.0005; //accelerate by 0.5% every frame
 }
 
 //start game section
@@ -130,11 +81,11 @@ function startGame(){
   isGameOver = false; 
   score = 0; 
   gameSpeed = 1;
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   requestAnimationFrame(draw);
 }
+
+// start button
 startButton.addEventListener('click', ()=>{
   menu.style.display = 'none';
   canvas.style.display = 'initial';
@@ -165,6 +116,14 @@ window.addEventListener('keypress', (event) => {
         }, i * 4); 
       }
       break;
+    }
+  }
+});
+
+window.addEventListener('keydown', (event)=>{
+  if (event.key === 'r') {
+    if (isGameOver) {
+      location.reload();
     }
   }
 });
