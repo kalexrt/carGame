@@ -1,18 +1,12 @@
 canvas{
     border: 2px solid #ccc;
+    display: none;
 }
 
 body{
     display: flex;
     justify-content: center;
     position: relative;
-}
-
-.menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    text-align: center;
 }
 
 button {
@@ -27,4 +21,29 @@ button {
 
 button:hover {
     background-color: #45a049;
+}
+
+
+#menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    border: 2px solid black;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 700px;
+    width: 600px;
+    gap: 70px;
+}
+
+.title{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #d19c08;
+    font-size: 80px;
+}
+
+.info{
+    color: #d19c08;
+    font-size: 20px;
 }

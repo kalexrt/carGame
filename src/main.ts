@@ -12,6 +12,7 @@ export let gameSpeed = 1;
 
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
+const menu = document.querySelector<HTMLDivElement>('#menu')!;
 const startButton = document.querySelector('#startButton')!;
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 export const ctx = canvas.getContext('2d')!;
@@ -56,20 +57,18 @@ function drawPlayer(){
   );
 }
 
+//collision
 function detectCollision(firstObj:Rectangle, secondObj:Rectangle){
-    // Calculate the edges of the first rectangle
     let firstLeft = firstObj.center.x - firstObj.width / 2;
     let firstRight = firstObj.center.x + firstObj.width / 2;
     let firstTop = firstObj.center.y - firstObj.height / 2;
     let firstBottom = firstObj.center.y + firstObj.height / 2;
 
-    // Calculate the edges of the second rectangle
     let secondLeft = secondObj.center.x - secondObj.width / 2;
     let secondRight = secondObj.center.x + secondObj.width / 2;
     let secondTop = secondObj.center.y - secondObj.height / 2;
     let secondBottom = secondObj.center.y + secondObj.height / 2;
 
-    // Check if the rectangles intersect
     return !(firstLeft > secondRight || 
              firstRight < secondLeft || 
              firstTop > secondBottom || 
@@ -93,6 +92,7 @@ function draw() {
 
   enemyArray.forEach(enemy => {
     if (detectCollision(enemy, player1)) {
+        console.log(enemy,player1);
         cancelAnimationFrame(mainLoop);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameOver();
@@ -103,10 +103,18 @@ function draw() {
   gameSpeed *= 1.0005
 
 }
+
+//start game section
 function startGame(){
   requestAnimationFrame(draw);
 }
+startButton.addEventListener('click', ()=>{
+  menu.style.display = 'none';
+  canvas.style.display = 'initial';
+  startGame();
+});
 
+//player movement
 window.addEventListener('keypress', (event) => {
   switch (event.key) {
     case 'a': {
@@ -133,5 +141,3 @@ window.addEventListener('keypress', (event) => {
     }
   }
 });
-
-startButton.addEventListener('click', startGame);
