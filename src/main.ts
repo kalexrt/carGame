@@ -62,7 +62,18 @@ function drawPlayer(){
   );
 }
 function drawEnemy(enemy:Rectangle){
-
+  ctx.beginPath();
+    ctx.drawImage(
+      carImage,
+      215,
+      390,
+      122,
+      258,
+      enemy.center.x - 20,
+      enemy.center.y,
+      40,
+      80
+    );
 }
 
 function draw() {
@@ -82,19 +93,7 @@ function draw() {
   })
 
   enemyArray.forEach((enemy) => {
-    ctx.beginPath();
-    ctx.drawImage(
-      carImage,
-      215,
-      390,
-      122,
-      258,
-      enemy.center.x - 20,
-      enemy.center.y,
-      40,
-      80
-    );
- 
+    drawEnemy(enemy);
     enemy.center.y += clamp(SPEED * gameSpeed, 0, 22);
     if (enemy.center.y > DIMENSIONS.CANVAS_HEIGHT) {
       enemy.center.y = getRandomInt(-600, 0);
