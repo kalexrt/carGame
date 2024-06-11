@@ -12,7 +12,7 @@ export let gameSpeed = 1;
 
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
-
+const startButton = document.querySelector('#startButton')!;
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 export const ctx = canvas.getContext('2d')!;
 
@@ -94,6 +94,7 @@ function draw() {
   enemyArray.forEach(enemy => {
     if (detectCollision(enemy, player1)) {
         cancelAnimationFrame(mainLoop);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameOver();
     }
   });
@@ -102,8 +103,9 @@ function draw() {
   gameSpeed *= 1.0005
 
 }
-
-requestAnimationFrame(draw);
+function startGame(){
+  requestAnimationFrame(draw);
+}
 
 window.addEventListener('keypress', (event) => {
   switch (event.key) {
@@ -131,3 +133,5 @@ window.addEventListener('keypress', (event) => {
     }
   }
 });
+
+startButton.addEventListener('click', startGame);
