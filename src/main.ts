@@ -15,11 +15,15 @@ export let gameSpeed = 1;
 export let mainLoop: any;
 export let isGameOver = false;
 export let score = 0;
-
+let maxBullets:number = 6;
 
 // Event listener for mouse click to set bulletclick to true
 window.addEventListener('click', () => {
-  bullets.push(new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40)));
+  console.log(maxBullets)
+  maxBullets -= 1;
+  if(maxBullets > 0){
+    bullets.push(new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40)));
+  }
 });
 
 const enemyArray = generateEnemyArray();
@@ -94,6 +98,16 @@ function draw() {
   bullets.forEach(bullet => {
     drawBullet(bullet);
     updateBullet(bullet);
+
+    if(detectCollision(enemyArray[0],bullet)){
+      enemyArray[0].center.y = -800;
+    }
+    if(detectCollision(enemyArray[1],bullet)){
+      enemyArray[1].center.y = -800;
+    }
+    if(detectCollision(enemyArray[2],bullet)){
+      enemyArray[2].center.y = -800;
+    }
   })
 
   mainLoop = requestAnimationFrame(draw);

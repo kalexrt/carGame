@@ -14,4 +14,7 @@ export function drawBullet(bullet:Rectangle){
 
 export function updateBullet(bullet:Rectangle){
     bullet.center.y -= clamp(SPEED * gameSpeed, 0, 22);
+    if (bullet.center.y < 0) {
+        bullets.unshift();
+    }
 }
