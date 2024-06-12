@@ -17,12 +17,13 @@ export let isGameOver = false;
 export let score = 0;
 let maxBullets:number = 6;
 
-// Event listener for mouse click to add bullets into the array
-window.addEventListener('click', () => {
-  console.log(maxBullets)
-  maxBullets -= 1;
-  if(maxBullets > 0){
-    bullets.push(new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40)));
+// Event listener for space to add bullets into the array
+window.addEventListener('keypress', (event) => {
+  if(event.key === ' '){
+    maxBullets -= 1;
+    if(maxBullets > 0){
+      bullets.push(new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40)));
+    }
   }
 });
 
