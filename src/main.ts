@@ -17,7 +17,7 @@ export let isGameOver = false;
 export let score = 0;
 let maxBullets:number = 6;
 
-// Event listener for mouse click to set bulletclick to true
+// Event listener for mouse click to add bullets into the array
 window.addEventListener('click', () => {
   console.log(maxBullets)
   maxBullets -= 1;
@@ -36,7 +36,7 @@ export const ctx = canvas.getContext('2d')!;
 canvas.width = DIMENSIONS.CANVAS_WIDTH;
 canvas.height = DIMENSIONS.CANVAS_HEIGHT;
 
-
+//game over function
 function gameOver(){
   setHighScore(score);
 
@@ -164,4 +164,3 @@ window.addEventListener('keypress', (event) => {
     }
   }
 });
-
