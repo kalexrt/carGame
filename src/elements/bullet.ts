@@ -1,12 +1,10 @@
 import Rectangle from "../shapes/Rectangle";
-import Point from "../shapes/Point";
 import { clamp } from "../utils/common";
-import { player1 } from "./player";
 import { SPEED } from "../constants";
 import { gameSpeed } from "../main";
 import { ctx } from "../main";
 
-export let bullet = new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40))
+export const bullets:Rectangle[] = []
 
 export function drawBullet(bullet:Rectangle){
     ctx.beginPath();

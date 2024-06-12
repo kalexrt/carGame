@@ -1,5 +1,6 @@
 import './style.css';
-
+import Rectangle from './shapes/Rectangle';
+import Point from './shapes/Point';
 import { DIMENSIONS } from './constants';
 import { drawBackground } from './elements/background';
 import { drawPlayer, player1 } from './elements/player';
@@ -8,20 +9,18 @@ import { generateEnemyArray, drawEnemy, updateEnemy } from './elements/enemy';
 import { drawScore } from './elements/score';
 import { detectCollision } from './utils/collision';
 import { hasPassed } from './elements/enemy';
-// import { bullet,drawBullet,updateBullet } from './elements/bullet';
+import { bullets, drawBullet, updateBullet } from './elements/bullet';
 import { setHighScore,getHighScore } from './elements/score';
 export let gameSpeed = 1;
 export let mainLoop: any;
 export let isGameOver = false;
 export let score = 0;
 
-// // Ensure bulletclick is defined in the correct scope
-// let bulletclick = false;
 
-// // Event listener for mouse click to set bulletclick to true
-// window.addEventListener('click', () => {
-//     bulletclick = true;
-// });
+// Event listener for mouse click to set bulletclick to true
+window.addEventListener('click', () => {
+  bullets.push(new Rectangle(3,8, new Point(player1.center.x, player1.center.y - 40)));
+});
 
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
@@ -59,6 +58,7 @@ function gameOver(){
 
 
 function draw() {
+
   if (isGameOver) return;
 
   drawBackground();
@@ -90,10 +90,11 @@ function draw() {
   // display score
   drawScore(ctx);
 
-  // if (bulletclick === true) {
-  //   drawBullet(bullet);
-  //   updateBullet(bullet);
-  // }
+
+  bullets.forEach(bullet => {
+    drawBullet(bullet);
+    updateBullet(bullet);
+  })
 
   mainLoop = requestAnimationFrame(draw);
   gameSpeed *= 1.0005; //accelerate by 0.5% every frame
