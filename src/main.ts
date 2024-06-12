@@ -8,11 +8,20 @@ import { generateEnemyArray, drawEnemy, updateEnemy } from './elements/enemy';
 import { drawScore } from './elements/score';
 import { detectCollision } from './utils/collision';
 import { hasPassed } from './elements/enemy';
+// import { bullet,drawBullet,updateBullet } from './elements/bullet';
+import { setHighScore,getHighScore } from './elements/score';
 export let gameSpeed = 1;
 export let mainLoop: any;
 export let isGameOver = false;
 export let score = 0;
 
+// // Ensure bulletclick is defined in the correct scope
+// let bulletclick = false;
+
+// // Event listener for mouse click to set bulletclick to true
+// window.addEventListener('click', () => {
+//     bulletclick = true;
+// });
 
 const enemyArray = generateEnemyArray();
 const roadArray = generateRoadArray();
@@ -24,19 +33,24 @@ export const ctx = canvas.getContext('2d')!;
 canvas.width = DIMENSIONS.CANVAS_WIDTH;
 canvas.height = DIMENSIONS.CANVAS_HEIGHT;
 
+
 function gameOver(){
+  setHighScore(score);
+
+  let highScore = `The highscore is ${getHighScore()}!!`;
   ctx.font = `36px Arial`;
   ctx.fillStyle = 'red';  
   ctx.textAlign = 'center';
 
   const gameOverText = 'Game Over';
-  const scoreText = `${score}`;
+  const scoreText = `Youe score is ${score}`;
   const restartText = 'Press R to Restart';
   const textX = canvas.width / 2;
   const textY = canvas.height / 2;
 
   ctx.fillText(gameOverText, textX, textY - 100);
   ctx.fillText(scoreText, textX, textY + 100);
+  ctx.fillText(highScore,textX, textY + 150)
   ctx.fillText(restartText, textX, textY + 200 )
 
   cancelAnimationFrame(mainLoop);
@@ -49,19 +63,23 @@ function draw() {
 
   drawBackground();
 
+  //generate and move road
   roadArray.forEach((road)=>{
     drawRoad(road);
     updateRoad(road);
   })
 
+  //generate and move enemy
   enemyArray.forEach((enemy) => {
     drawEnemy(enemy);
     updateEnemy(enemy);
     if(hasPassed) score += 1;
   });
 
+  //generate player
   drawPlayer();
 
+  // check enemy collision
   enemyArray.forEach(enemy => {
     if (detectCollision(enemy, player1)) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -69,7 +87,13 @@ function draw() {
     }
   });
 
+  // display score
   drawScore(ctx);
+
+  // if (bulletclick === true) {
+  //   drawBullet(bullet);
+  //   updateBullet(bullet);
+  // }
 
   mainLoop = requestAnimationFrame(draw);
   gameSpeed *= 1.0005; //accelerate by 0.5% every frame
@@ -117,13 +141,12 @@ window.addEventListener('keypress', (event) => {
       }
       break;
     }
-  }
-});
-
-window.addEventListener('keydown', (event)=>{
-  if (event.key === 'r') {
-    if (isGameOver) {
-      location.reload();
+    case 'r':{
+      if (isGameOver) {
+        location.reload();
+      }
+      break;
     }
   }
 });
+
